@@ -1,5 +1,7 @@
 'use strict';
 
+var path = require('path');
+var src = path.join(__dirname, '..', '..', 'src');
 var webpack = require('webpack');
 
 var plugins = [
@@ -21,17 +23,29 @@ if (process.env.NODE_ENV === 'production') {
 
 module.exports = {
     devtool: 'eval',
-    entry: './src/index',
+    entry: './index',
     output: {
+        path: path.join(__dirname, 'dist'),
         filename: 'bundle.js'
+    },
+    resolve: {
+        alias: {
+            'rx-redux': src
+        },
+        extensions: ['', '.js']
     },
     module: {
         loaders: [
-            { test: /\.js$/, loaders: ['babel-loader'], exclude: /node_modules/ }
+            {
+                test: /\.js$/,
+                loaders: ['babel-loader'],
+                include: [
+                    __dirname,
+                    src
+                ],
+                exclude: /node_modules/
+            }
         ]
     },
-    plugins: plugins,
-    resolve: {
-        extensions: ['', '.js']
-    }
+    plugins: plugins
 };
