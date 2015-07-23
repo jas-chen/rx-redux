@@ -1,13 +1,13 @@
 export default function(action$, reducers, initState){
     console.info('initialize rx-redux');
 
-    const subject$ = new Rx.Subject();
-    
-    const state$ = Rx.Observable.create(function(observer){
+    const nextState$ = new Rx.Subject();
+
+    const currentState$ = Rx.Observable.create(function(observer){
         console.log('init state:', initState);
         observer.onNext(initState);
 
-        subject$.subscribe(
+        nextState$.subscribe(
             function (state) {
                 console.log('set current state to:', state);
                 observer.onNext(state);
@@ -23,7 +23,7 @@ export default function(action$, reducers, initState){
     function start() {
         console.log('start');
 
-        const dispatcher$ = action$.withLatestFrom(state$, function(action, state){
+        const dispatcher$ = action$.withLatestFrom(currentState$, function(action, state){
             console.log('dispatcher get action:', action.type, ', current state:', state);
             reducers.forEach(function(reducer){
                 state = reducer(state, action);
@@ -35,18 +35,18 @@ export default function(action$, reducers, initState){
         dispatcher$.subscribe(
             function (result) {
                 console.log('action:', result.action, 'completed, change state to:', result.state);
-                subject$.onNext(result.state);
+                nextState$.onNext(result.state);
             },
             function (err) {
-                console.error('state$ error:', err.stacktrace);
+                console.error('dispatcher$ error:', err.stacktrace);
             },
             function () {
-                console.log('state$ completed');
+                console.log('dispatcher$ completed');
             });
     }
 
     return {
         start: start,
-        state$: subject$
+        state$: nextState$
     }
 }
