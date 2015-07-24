@@ -28,7 +28,16 @@ const initAction = {};
 const action$ = Rx.Observable.merge(decreaseAction$, increaseAction$, increaseIfOddAction$).startWith(initAction);
 // const action$ = Rx.Observable.just(initAction);
 
-const newCreateStore = applyMiddleware(thunkMiddleware)(createStore);
+function dumbMiddleware(id) {
+    return () => {
+        return next => action => {
+            console.log(`dumb middleware ${id}`);
+            next(action)
+        }
+    }
+}
+
+const newCreateStore = applyMiddleware(dumbMiddleware(1), dumbMiddleware(2), thunkMiddleware)(createStore);
 const {state$, startSubscribe, getState} = newCreateStore(reducers);
 
 state$.subscribe(

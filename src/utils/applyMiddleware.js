@@ -4,6 +4,8 @@ function wrapDispatcher(store, dispatcher, middleware) {
     dispatcher.subscribe(action => {
         middleware(store)(next)(action);
     });
+
+    return m$;
 }
 
 export default function applyMiddleware(...middleware) {
@@ -18,7 +20,7 @@ export default function applyMiddleware(...middleware) {
                 getState: newCreateStore.getState
             };
 
-            middleware.forEach(m => wrapDispatcher(store, dispatcher$, m));
+            middleware.reduce((prev, cur) => wrapDispatcher(store, prev, cur), dispatcher$);
 
             newCreateStore.replaceDispatcher(dispatcher$);
 
