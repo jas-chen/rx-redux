@@ -1,8 +1,8 @@
-import Rx from 'rx';
-import rxRedux from 'rx-redux';
-import thunkMiddleware from 'redux-thunk';
+import Rx from 'rx'
+import {createStore, applyMiddleware} from 'rx-redux'
+import thunkMiddleware from 'redux-thunk'
 import * as reducers from './reducers'
-import * as CounterActions from './actions/CounterActions';
+import * as CounterActions from './actions/CounterActions'
 
 const counter = document.getElementById('count');
 
@@ -25,10 +25,11 @@ const increaseIfOddAction$ = (() => {
 })();
 
 const initAction = {};
-const action$ = Rx.Observable.merge(decreaseAction$, increaseAction$, increaseIfOddAction$).startWith(initAction);
+// const action$ = Rx.Observable.merge(decreaseAction$, increaseAction$, increaseIfOddAction$).startWith(initAction);
+const action$ = Rx.Observable.just(initAction);
 
-
-const {state$, start, replaceDispatcher, getDispatcher, getState} = rxRedux.createStore(reducers);
+const newCreateStore = applyMiddleware(thunkMiddleware)(createStore);
+const {state$, startSubscribe, getState} = newCreateStore(reducers);
 
 state$.subscribe(
     state => {
@@ -37,24 +38,6 @@ state$.subscribe(
     }
 );
 
-const dispatcher$ = getDispatcher();
-const dispatch = dispatcher$.onNext.bind(dispatcher$);
+startSubscribe(action$);
 
-function applyMiddleware(store, dispatcher, middleware) {
-    const m$ = new Rx.Subject();
-    const next = m$.onNext.bind(m$);
-    dispatcher.subscribe(action => {
-        middleware(store)(next)(action);
-    });
-}
-
-applyMiddleware({dispatch, getState}, dispatcher$, thunkMiddleware);
-
-replaceDispatcher(dispatcher$);
-
-start(action$);
-
-
-
-
-// window.odd = CounterActions.incrementIfOdd;
+state$.subscribeOnCompleted(console.log('fin', getState()));
