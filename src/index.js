@@ -1,4 +1,6 @@
-export default function(action$, reducers, initState){
+import Rx from 'rx';
+
+function createStore(reducers, initState = {}){
     console.info('initialize rx-redux');
 
     const nextState$ = new Rx.Subject();
@@ -8,28 +10,41 @@ export default function(action$, reducers, initState){
         observer.onNext(initState);
 
         nextState$.subscribe(
-            state => {
+                state => {
                 console.log('set current state to:', state);
                 observer.onNext(state);
             },
-            err => console.error('subject error: ', err.stacktrace),
+                err => console.error('subject error: ', err.stacktrace),
             () => console.log('subject completed')
         );
     });
 
-    function start() {
+    reducers = Object.keys(reducers).reduce((result, key) => {
+        if(typeof reducers[key] === 'function') {
+            result[key] = reducers[key];
+        }
+
+        return result;
+    }, {});
+
+    function sendToReducer(action, state) {
+        console.log('dispatcher get action:', action, ', current state:', state);
+
+        for(var name in reducers) {
+            state[name] = reducers[name](state[name], action);
+        }
+
+        return {action, state}
+    }
+
+    const baseDispatcher$ = new Rx.Subject();
+
+    let dispatcher$ = new Rx.Subject();
+
+    function start(action$) {
         console.log('start');
 
-        const dispatcher$ = action$.withLatestFrom(currentState$, (action, state) => {
-            console.log('dispatcher get action:', action.type, ', current state:', state);
-            reducers.forEach(reducer => {
-                state = reducer(state, action);
-            });
-
-            return {action, state}
-        });
-
-        dispatcher$.subscribe(
+        baseDispatcher$.withLatestFrom(currentState$, sendToReducer).subscribe(
             result => {
                 console.log('action:', result.action, 'completed, change state to:', result.state);
                 nextState$.onNext(result.state);
@@ -37,10 +52,30 @@ export default function(action$, reducers, initState){
             err => console.error('dispatcher$ error:', err.stacktrace),
             () => console.log('dispatcher$ completed')
         );
+
+        action$.subscribeOnNext(baseDispatcher$.onNext.bind(baseDispatcher$));
     }
+
+    const getState = (() => {
+        let state;
+        nextState$.subscribe(
+                nextState => {
+                state = nextState;
+            }
+        );
+
+        return () => state;
+    })();
 
     return {
         start,
-        state$: nextState$
+        state$: nextState$,
+        getState,
+        getDispatcher: () => dispatcher$,
+        replaceDispatcher: (newDispatcher$) => dispatcher$ = newDispatcher$
     }
+}
+
+export default {
+    createStore
 }

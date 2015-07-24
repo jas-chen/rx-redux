@@ -1,1 +1,1 @@
-export default [require('./counter')];
+export { default as counter } from './counter';
