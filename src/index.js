@@ -44,25 +44,18 @@ function createStore(reducers, initState = {}){
     const state$ = createState$(initState, nextState$);
     const getState = (createGetState)(nextState$);
 
-    const baseDispatcher$ = new Rx.Subject();
     let dispatcher$ = new Rx.Subject();
 
-    log('baseDispatcher$', baseDispatcher$);
     log('dispatcher$', dispatcher$);
     log('nextState$', nextState$);
     log('state$', state$);
 
-    baseDispatcher$.subscribeOnCompleted(() => dispatcher$.onCompleted());
     dispatcher$.subscribeOnCompleted(() => nextState$.onCompleted());
     nextState$.subscribeOnCompleted(() => state$.onCompleted());
 
     function startSubscribe(action$) {
         console.info('[rx-redux] start subscribe action stream');
-
-        baseDispatcher$.subscribe(
-            action => dispatcher$.onNext(action)
-        );
-
+        
         function sendToReducer(action, state) {
             console.info('[dispatcher$] get action:', action, ', state:', state);
 
@@ -85,9 +78,9 @@ function createStore(reducers, initState = {}){
         console.info('[state$] init state:', initState);
         state$.onNext(initState);
 
-        action$.subscribe(action => baseDispatcher$.onNext(action));
+        action$.subscribe(action => dispatcher$.onNext(action));
         log('action$', action$);
-        action$.subscribeOnCompleted(() => baseDispatcher$.onCompleted());
+        action$.subscribeOnCompleted(() => dispatcher$.onCompleted());
     }
 
     return {
