@@ -25,8 +25,8 @@ const increaseIfOddAction$ = (() => {
 })();
 
 const initAction = {};
-// const action$ = Rx.Observable.merge(decreaseAction$, increaseAction$, increaseIfOddAction$).startWith(initAction);
-const action$ = Rx.Observable.just(initAction);
+const action$ = Rx.Observable.merge(decreaseAction$, increaseAction$, increaseIfOddAction$).startWith(initAction);
+// const action$ = Rx.Observable.just(initAction);
 
 const newCreateStore = applyMiddleware(thunkMiddleware)(createStore);
 const {state$, startSubscribe, getState} = newCreateStore(reducers);

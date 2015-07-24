@@ -85,11 +85,6 @@ function createStore(reducers, initState = {}){
         console.info('[state$] init state:', initState);
         state$.onNext(initState);
 
-        /*
-         err => console.error('dispatcher$ error:', err.stacktrace),
-         () => console.log('dispatcher$ completed')
-        */
-
         action$.subscribe(action => baseDispatcher$.onNext(action));
         log('action$', action$);
         action$.subscribeOnCompleted(() => baseDispatcher$.onCompleted());
