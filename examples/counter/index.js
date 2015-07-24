@@ -39,25 +39,18 @@ state$.subscribe(
 
 const dispatcher$ = getDispatcher();
 const dispatch = dispatcher$.onNext.bind(dispatcher$);
-// window.dispatch = dispatch;
 
-const middleware$ = (store=>{
+function applyMiddleware(store, dispatcher, middleware) {
     const m$ = new Rx.Subject();
     const next = m$.onNext.bind(m$);
-    const tunk = thunkMiddleware(store)(next);
-    dispatcher$.subscribe(action => {
-        tunk(action);
+    dispatcher.subscribe(action => {
+        middleware(store)(next)(action);
     });
+}
 
-    return m$;
-})({dispatch, getState});
+applyMiddleware({dispatch, getState}, dispatcher$, thunkMiddleware);
 
-
-middleware$.subscribe(action => {
-    console.log('middleware dispatch', action);
-});
-
-// replaceDispatcher(middleware$);
+replaceDispatcher(dispatcher$);
 
 start(action$);
 

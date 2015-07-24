@@ -44,7 +44,9 @@ function createStore(reducers, initState = {}){
     function start(action$) {
         console.log('start');
 
-        baseDispatcher$.withLatestFrom(currentState$, sendToReducer).subscribe(
+        baseDispatcher$.subscribeOnNext(action => dispatcher$.onNext(action));
+
+        dispatcher$.withLatestFrom(currentState$, sendToReducer).subscribe(
             result => {
                 console.log('action:', result.action, 'completed, change state to:', result.state);
                 nextState$.onNext(result.state);
@@ -53,7 +55,7 @@ function createStore(reducers, initState = {}){
             () => console.log('dispatcher$ completed')
         );
 
-        action$.subscribeOnNext(baseDispatcher$.onNext.bind(baseDispatcher$));
+        action$.subscribeOnNext(action => baseDispatcher$.onNext(action));
     }
 
     const getState = (() => {
