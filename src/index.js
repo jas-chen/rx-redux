@@ -5,7 +5,7 @@ import combineReducers from './utils/combineReducers'
 function log(name, o$) {
     name = '[' + name + '] ';
     o$.doOnError(e => console.error(name, e.stacktrace));
-    o$.doOnCompleted(() => console.warn(name + 'stream completed'));
+    o$.doOnCompleted(() => console.warn(name + 'Stream completed'));
 }
 
 function createDispatch(initState, reducer) {
@@ -13,21 +13,19 @@ function createDispatch(initState, reducer) {
 
     return (action) => {
         if(!isPlainObject(action)) {
-            const error = new Error('action should be plain Object.');
-            console.error(error);
-            throw error;
+            console.error('[reducer] Action:', action,'is not plain object. Current state will be returned.');
         }
-
-        console.info('[reducer] get action:', action, ', state:', state);
-        state = reducer(state, action);
-        console.info('[reducer] dispatch new state:', state);
+        else {
+            state = reducer(state, action);
+        }
 
         return state
     }
 }
 
-function createStore(reducer, initState = {}){
-    console.info('[rx-redux] initialize rx-redux');
+function createStore(reducer, initState) {
+    console.info('[rx-redux] Create store with initial state:', initState);
+
     const dispatch = createDispatch(initState, reducer);
     const dispatcher$ = new Rx.Subject();
     const state$ = dispatcher$.map(dispatch);

@@ -24,8 +24,7 @@ const increaseIfOddAction$ = (() => {
     return event$.map(CounterActions.incrementIfOdd);
 })();
 
-const initAction = {};
-const action$ = Rx.Observable.merge(decreaseAction$, increaseAction$, increaseIfOddAction$).startWith(initAction);
+const action$ = Rx.Observable.merge(decreaseAction$, increaseAction$, increaseIfOddAction$);
 // const action$ = Rx.Observable.just(initAction);
 
 function dumbMiddleware(id) {
@@ -37,8 +36,11 @@ function dumbMiddleware(id) {
     }
 }
 
-// const newCreateStore = applyMiddleware(dumbMiddleware(1), thunkMiddleware, dumbMiddleware(2))(createStore);
-const {dispatcher$, state$} = createStore(combineReducers(reducers));
+//const newCreateStore = applyMiddleware(dumbMiddleware(1), thunkMiddleware, dumbMiddleware(2))(createStore);
+const reducer = combineReducers(reducers);
+
+const {dispatcher$, state$} = createStore(reducer);
+//const {dispatcher$, state$} = createStore(reducer, {counter: 5566});
 
 state$.subscribe(
     state => {
@@ -51,3 +53,5 @@ action$.subscribe(action => {
     console.log('action get:', action);
     dispatcher$.onNext(action);
 });
+
+dispatcher$.onNext({type: '@@INIT' + Math.random()});

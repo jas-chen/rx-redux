@@ -10,12 +10,16 @@ function finalReducers(reducers) {
 
 export default function combineReducers(reducers) {
     reducers = finalReducers(reducers);
+    const keys = Object.keys(reducers);
 
-    return (state, action) => {
-        for(var name in reducers) {
-            state[name] = reducers[name](state[name], action);
-        }
+    if(!keys || !keys.length) {
+        console.warn('[combineReducers] Result is empty.');
+    }
 
-        return state
+    return (state = {}, action = undefined) => {
+        return keys.reduce((result, key) => {
+            result[key] = reducers[key](state[key], action);
+            return result;
+        }, {})
     }
 }
