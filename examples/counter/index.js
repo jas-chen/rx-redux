@@ -1,5 +1,5 @@
 import Rx from 'rx'
-import {createStore, applyMiddleware} from 'rx-redux'
+import {createStore, combineReducers} from 'rx-redux'
 import thunkMiddleware from 'redux-thunk'
 import * as reducers from './reducers'
 import * as CounterActions from './actions/CounterActions'
@@ -32,13 +32,13 @@ function dumbMiddleware(id) {
     return () => {
         return next => action => {
             console.log(`dumb middleware ${id}`);
-            next(action)
+            return next(action)
         }
     }
 }
 
-const newCreateStore = applyMiddleware(dumbMiddleware(1), dumbMiddleware(2), thunkMiddleware)(createStore);
-const {state$, startSubscribe, getState} = newCreateStore(reducers);
+// const newCreateStore = applyMiddleware(dumbMiddleware(1), thunkMiddleware, dumbMiddleware(2))(createStore);
+const {dispatcher$, state$} = createStore(combineReducers(reducers));
 
 state$.subscribe(
     state => {
@@ -47,6 +47,7 @@ state$.subscribe(
     }
 );
 
-startSubscribe(action$);
-
-state$.subscribeOnCompleted(console.log('fin', getState()));
+action$.subscribe(action => {
+    console.log('action get:', action);
+    dispatcher$.onNext(action);
+});

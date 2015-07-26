@@ -20,6 +20,8 @@ export function incrementIfOdd() {
             return;
         }
 
+        console.log('dispatch function');
+
         dispatch(increment());
     };
 }

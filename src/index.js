@@ -1,98 +1,44 @@
 import Rx from 'rx'
-import applyMiddleware from './utils/applyMiddleware'
-
-function finalReducers(reducers) {
-    return Object.keys(reducers).reduce((result, key) => {
-        if(typeof reducers[key] === 'function') {
-            result[key] = reducers[key];
-        }
-
-        return result;
-    }, {})
-}
-
-function createState$(initState, nextState$) {
-    const state$ = new Rx.Subject();
-    nextState$.subscribe(
-        state => {
-            console.info('[state$] set state to:', state);
-            state$.onNext(state);
-        }
-    );
-
-    return state$;
-}
-
-function createGetState(nextState$) {
-    let state;
-    nextState$.subscribe(nextState => state = nextState);
-    return () => state;
-}
+import isPlainObject from './utils/isPlainObject'
+import combineReducers from './utils/combineReducers'
 
 function log(name, o$) {
     name = '[' + name + '] ';
-    o$.subscribeOnError(e => console.error(name, e.stacktrace));
-    o$.subscribeOnCompleted(() => console.warn(name + 'stream completed'));
+    o$.doOnError(e => console.error(name, e.stacktrace));
+    o$.doOnCompleted(() => console.warn(name + 'stream completed'));
 }
 
-function createStore(reducers, initState = {}){
-    console.info('[rx-redux] initialize rx-redux');
+function createDispatch(initState, reducer) {
+    let state = initState;
 
-    reducers = finalReducers(reducers);
-
-    const nextState$ = new Rx.Subject();
-    const state$ = createState$(initState, nextState$);
-    const getState = (createGetState)(nextState$);
-
-    let dispatcher$ = new Rx.Subject();
-
-    log('dispatcher$', dispatcher$);
-    log('nextState$', nextState$);
-    log('state$', state$);
-
-    dispatcher$.subscribeOnCompleted(() => nextState$.onCompleted());
-    nextState$.subscribeOnCompleted(() => state$.onCompleted());
-
-    function startSubscribe(action$) {
-        console.info('[rx-redux] start subscribe action stream');
-        
-        function sendToReducer(action, state) {
-            console.info('[dispatcher$] get action:', action, ', state:', state);
-
-            for(var name in reducers) {
-                state[name] = reducers[name](state[name], action);
-            }
-
-            return {action, state}
+    return (action) => {
+        if(!isPlainObject(action)) {
+            const error = new Error('action should be plain Object.');
+            console.error(error);
+            throw error;
         }
 
-        dispatcher$.withLatestFrom(state$, sendToReducer).subscribe(
-            result => {
-                console.info('[dispatcher$] action:', result.action, 'done, dispatch next state:', result.state);
-                nextState$.onNext(result.state);
-            },
-            e => console.error('[dispatcher$.withLatestFrom(state$)]', e.stacktrace),
-            () => console.warn('[dispatcher$.withLatestFrom(state$)] stream completed')
-        );
+        console.info('[reducer] get action:', action, ', state:', state);
+        state = reducer(state, action);
+        console.info('[reducer] dispatch new state:', state);
 
-        console.info('[state$] init state:', initState);
-        state$.onNext(initState);
-
-        action$.subscribe(action => dispatcher$.onNext(action));
-        log('action$', action$);
-        action$.subscribeOnCompleted(() => dispatcher$.onCompleted());
+        return state
     }
+}
 
-    return {
-        startSubscribe,
-        state$,
-        getState,
-        getDispatcher: () => dispatcher$,
-        replaceDispatcher: (newDispatcher$) => dispatcher$ = newDispatcher$
-    }
+function createStore(reducer, initState = {}){
+    console.info('[rx-redux] initialize rx-redux');
+    const dispatch = createDispatch(initState, reducer);
+    const dispatcher$ = new Rx.Subject();
+    const state$ = dispatcher$.map(dispatch);
+
+    log('dispatcher$', dispatcher$);
+    log('state$', state$);
+
+    return {state$, dispatcher$}
 }
 
 export default {
     createStore,
-    applyMiddleware
+    combineReducers
 }

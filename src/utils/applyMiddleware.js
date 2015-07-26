@@ -8,23 +8,43 @@ function wrapDispatcher(store, dispatcher, middleware) {
     return m$;
 }
 
+function chainMiddleware(middleware, store) {
+    let dispatch;
+    middleware.reduceRight((nextMiddleware, middleware) => {
+        dispatch = middleware(store)(nextMiddleware);
+        return middleware;
+    });
+
+    return dispatch;
+}
+
 export default function applyMiddleware(...middleware) {
     return function(createStore) {
         return function(reducers) {
-            const newCreateStore = createStore(reducers);
+            const store = createStore(reducers);
 
-            const dispatcher$ = newCreateStore.getDispatcher();
-            const dispatch = dispatcher$.onNext.bind(dispatcher$);
-            const store = {
-                dispatch,
-                getState: newCreateStore.getState
-            };
+            const dispatcher$ = store.getDispatcher();
 
-            middleware.reduce((prev, cur) => wrapDispatcher(store, prev, cur), dispatcher$);
+            /*
+            let last$;
+            middleware.reduce((cur, next) => {
+                last$ = wrapDispatcher(store, cur, next);
+                return last$
+            }, dispatcher$);
 
-            newCreateStore.replaceDispatcher(dispatcher$);
+             store.replaceDispatcher(last$);
+            */
 
-            return newCreateStore
+            const newDispatch = chainMiddleware(middleware, store);
+            const newDispatcher$ = new Rx.Subject();
+
+            dispatcher$.subscribe(action => {
+                newDispatcher$.onNext(newDispatch(action));
+            });
+
+            store.replaceDispatcher(dispatcher$.map(dispatch));
+
+            return store
         }
     }
 }
