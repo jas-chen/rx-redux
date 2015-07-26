@@ -2,12 +2,6 @@ import Rx from 'rx'
 import isPlainObject from './utils/isPlainObject'
 import combineReducers from './utils/combineReducers'
 
-function log(name, o$) {
-    name = '[' + name + '] ';
-    o$.doOnError(e => console.error(name, e.stacktrace));
-    o$.doOnCompleted(() => console.warn(name + 'Stream completed'));
-}
-
 function createDispatch(initState, reducer) {
     let state = initState;
 
@@ -24,14 +18,9 @@ function createDispatch(initState, reducer) {
 }
 
 function createStore(reducer, initState) {
-    console.info('[rx-redux] Create store with initial state:', initState);
-
     const dispatch = createDispatch(initState, reducer);
     const dispatcher$ = new Rx.Subject();
     const state$ = dispatcher$.map(dispatch);
-
-    log('dispatcher$', dispatcher$);
-    log('state$', state$);
 
     return {state$, dispatcher$}
 }

@@ -49,9 +49,6 @@ state$.subscribe(
     }
 );
 
-action$.subscribe(action => {
-    console.log('action get:', action);
-    dispatcher$.onNext(action);
-});
+action$.subscribe(action => dispatcher$.onNext(action));
 
 dispatcher$.onNext({type: '@@INIT' + Math.random()});
