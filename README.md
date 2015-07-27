@@ -21,7 +21,7 @@ import thunkMiddleware from 'redux-thunk'
 import * as reducers from './reducers'
 import { render, getActionStream } from './view'
 
-const action$ = getActionStreamFrom();
+const action$ = getActionStream();
 
 const newCreateStore = applyMiddleware(thunkMiddleware)(createStore);
 const reducer = combineReducers(reducers);
