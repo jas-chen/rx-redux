@@ -39,16 +39,20 @@ function dumbMiddleware(id) {
 //const newCreateStore = applyMiddleware(dumbMiddleware(1), thunkMiddleware, dumbMiddleware(2))(createStore);
 const reducer = combineReducers(reducers);
 
-const {dispatcher$, state$} = createStore(reducer);
-//const {dispatcher$, state$} = createStore(reducer, {counter: 5566});
+//const {dispatcher$, state$} = createStore(reducer);
+const {dispatcher$, state$} = createStore(reducer, {counter: 5566});
 
 state$.subscribe(
     state => {
         console.log('update UI');
         counter.textContent = state.counter;
-    }
+    },
+    err => console.error(err.stacktrace),
+    () => console.warn('state$ stream completed.')
 );
 
 action$.subscribe(action => dispatcher$.onNext(action));
 
 dispatcher$.onNext({type: '@@INIT' + Math.random()});
+
+dispatcher$.onCompleted();

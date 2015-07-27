@@ -20,9 +20,19 @@ function createDispatch(initState, reducer) {
 function createStore(reducer, initState) {
     const dispatch = createDispatch(initState, reducer);
     const dispatcher$ = new Rx.Subject();
+
+    dispatcher$.subscribeOnCompleted(() => {
+        console.warn('[rx-redux] dispatcher$ stream completed.');
+    });
+
     const state$ = dispatcher$.map(dispatch);
 
-    return {state$, dispatcher$}
+    return {
+        state$,
+        dispatcher$,
+        getReducer: () => reducer,
+        replaceReducer: (newReducer) => { reducer = newReducer; }
+    }
 }
 
 export default {
