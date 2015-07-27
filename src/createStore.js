@@ -30,7 +30,7 @@ export default function createStore(reducer, initState) {
 
   function reduce(action) {
     if (!isPlainObject(action)) {
-      throw new Error('[reducer] Action must be a plain object. Current state will be returned.');
+      throw new Error('Action must be a plain object.');
     } else {
       state = currentReducer(state, action);
     }
