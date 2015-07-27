@@ -3,8 +3,8 @@ import isPlainObject from './utils/isPlainObject'
 import combineReducers from './utils/combineReducers'
 import applyMiddleware from './utils/applyMiddleware'
 
-function createDispatch(initState, reducer) {
-    let state = initState;
+function createDispatch(reducer) {
+    let state;
     const listeners = [];
 
     function dispatch(action) {
@@ -24,15 +24,26 @@ function createDispatch(initState, reducer) {
         return () => listeners.splice(listeners.indexOf(listener), 1)
     }
 
+    function replaceReducer(newReducer) {
+        reducer = newReducer;
+        console.log('new reducer:', reducer);
+        dispatch(initAction);
+    }
+
     return {
         dispatch,
         subscribe,
-        getState: () => state
+        getState: () => state,
+        setState: (newState) => { state = newState; },
+        replaceReducer
     }
 }
 
+const initAction = {type: '@@rx-redux/INIT_' + Math.random()};
+
 function createStore(reducer, initState) {
-    const {dispatch, getState, subscribe} = createDispatch(initState, reducer);
+    const {dispatch, getState, subscribe, setState, replaceReducer} = createDispatch(reducer);
+    setState(reducer(initState, initAction));
     const dispatcher$ = new Rx.Subject();
 
     dispatcher$.subscribeOnCompleted(() => {
@@ -48,7 +59,7 @@ function createStore(reducer, initState) {
         dispatch: dispatcher$.onNext.bind(dispatcher$),
         subscribe,
         getReducer: () => reducer,
-        replaceReducer: (newReducer) => { reducer = newReducer; }
+        replaceReducer
     }
 }
 

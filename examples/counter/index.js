@@ -4,7 +4,15 @@ import thunkMiddleware from 'redux-thunk'
 import * as reducers from './reducers'
 import * as CounterActions from './actions/CounterActions'
 
-const counter = document.getElementById('count');
+const updateCounter = (() => {
+    const counter = document.getElementById('count');
+
+    return (state) => {
+        console.log('update UI with state:', state);
+        counter.textContent = state.counter.toString();
+    }
+})();
+
 
 const decreaseAction$ = (() => {
     const decrease = document.getElementById('btn-decrease');
@@ -40,23 +48,35 @@ function dumbMiddleware(id) {
 const reducer = combineReducers(reducers);
 
 //const {dispatcher$, state$} = createStore(reducer);
-const {dispatcher$, state$, subscribe, getState} = createStore(reducer, {counter: 5566});
+const {dispatcher$, state$, getReducer, replaceReducer, subscribe, getState} = createStore(reducer);
+
+updateCounter(getState());
 
 state$.subscribe(
-    state => {
-        console.log('update UI');
-        counter.textContent = state.counter;
-    },
+    updateCounter,
     err => console.error(err.stacktrace),
     () => console.warn('state$ stream completed.')
 );
 
 action$.subscribe(action => dispatcher$.onNext(action));
 
-dispatcher$.onNext({type: '@@INIT' + Math.random()});
+// dispatcher$.onNext({type: '@@INIT' + Math.random()});
 
 subscribe(() => {
     console.log('listener get called. state:', getState());
 });
 
+window.reducer1 = getReducer();
+window.reducer2 = function counter(state = 0, action = {}) {
+    switch (action.type) {
+        case 'INCREMENT_COUNTER':
+            return {counter: state.counter + 2};
+        case 'DECREMENT_COUNTER':
+            return {counter: state.counter - 2};
+        default:
+            return {counter: state.counter};
+    }
+};
+
+window.replaceReducer = replaceReducer;
 //dispatcher$.onCompleted();
