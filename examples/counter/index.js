@@ -40,7 +40,7 @@ function dumbMiddleware(id) {
 const reducer = combineReducers(reducers);
 
 //const {dispatcher$, state$} = createStore(reducer);
-const {dispatcher$, state$} = createStore(reducer, {counter: 5566});
+const {dispatcher$, state$, subscribe, getState} = createStore(reducer, {counter: 5566});
 
 state$.subscribe(
     state => {
@@ -55,4 +55,8 @@ action$.subscribe(action => dispatcher$.onNext(action));
 
 dispatcher$.onNext({type: '@@INIT' + Math.random()});
 
-dispatcher$.onCompleted();
+subscribe(() => {
+    console.log('listener get called. state:', getState());
+});
+
+//dispatcher$.onCompleted();

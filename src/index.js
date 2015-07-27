@@ -5,6 +5,7 @@ import applyMiddleware from './utils/applyMiddleware'
 
 function createDispatch(initState, reducer) {
     let state = initState;
+    const listeners = [];
 
     function dispatch(action) {
         if(!isPlainObject(action)) {
@@ -12,19 +13,26 @@ function createDispatch(initState, reducer) {
         }
         else {
             state = reducer(state, action);
+            listeners.forEach(listener => listener());
         }
 
         return state
     }
 
+    function subscribe(listener) {
+        listeners.push(listener);
+        return () => listeners.splice(listeners.indexOf(listener), 1)
+    }
+
     return {
         dispatch,
+        subscribe,
         getState: () => state
     }
 }
 
 function createStore(reducer, initState) {
-    const {dispatch, getState} = createDispatch(initState, reducer);
+    const {dispatch, getState, subscribe} = createDispatch(initState, reducer);
     const dispatcher$ = new Rx.Subject();
 
     dispatcher$.subscribeOnCompleted(() => {
@@ -38,6 +46,7 @@ function createStore(reducer, initState) {
         dispatcher$,
         getState,
         dispatch: dispatcher$.onNext.bind(dispatcher$),
+        subscribe,
         getReducer: () => reducer,
         replaceReducer: (newReducer) => { reducer = newReducer; }
     }
