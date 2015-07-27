@@ -1,59 +1,52 @@
-import Rx from 'rx'
-import isPlainObject from './utils/isPlainObject'
-
-function createDispatcher() {
-    const dispatcher$ = new Rx.Subject();
-
-    dispatcher$.subscribeOnCompleted(() => {
-        console.warn('[rx-redux] dispatcher$ stream completed.');
-    });
-
-    return dispatcher$;
-}
+import Rx from 'rx';
+import isPlainObject from './utils/isPlainObject';
 
 export default function createStore(reducer, initState) {
-    const initAction = {type: '@@rx-redux/INIT_' + (new Date()).getTime()};
-    const listeners = [];
-    function callListeners() { listeners.forEach(listener => listener()); }
+  const initAction = {type: '@@rx-redux/INIT_' + (new Date()).getTime()};
+  let currentReducer = reducer;
+  const listeners = [];
 
-    const dispatcher$ = createDispatcher();
-    const state$ = dispatcher$.map(reduce).do(callListeners);
+  function callListeners() {
+    listeners.forEach(listener => listener());
+  }
 
-    let state = reducer(initState, initAction);
+  let state = currentReducer(initState, initAction);
 
-    function reduce(action) {
-        if(!isPlainObject(action)) {
-            console.error('[reducer] Action:', action,'is not a plain object. Current state will be returned.');
-        }
-        else {
-            state = reducer(state, action);
-        }
-
-        return state
+  function reduce(action) {
+    if (!isPlainObject(action)) {
+      throw new Error('[reducer] Action must be a plain object. Current state will be returned.');
+    } else {
+      state = currentReducer(state, action);
     }
 
-    function dispatch(action) {
-        dispatcher$.onNext(action);
-        return action;
-    }
+    return state;
+  }
 
-    function subscribe(listener) {
-        listeners.push(listener);
-        return () => listeners.splice(listeners.indexOf(listener), 1)
-    }
+  const dispatcher$ = new Rx.Subject();
+  const state$ = dispatcher$.map(reduce).do(callListeners);
 
-    function replaceReducer(newReducer) {
-        reducer = newReducer;
-        dispatch(initAction);
-    }
+  function dispatch(action) {
+    dispatcher$.onNext(action);
+    return action;
+  }
 
-    return {
-        state$,
-        dispatcher$,
-        getState: () => state,
-        dispatch,
-        subscribe,
-        getReducer: () => reducer,
-        replaceReducer
-    }
+  function subscribe(listener) {
+    listeners.push(listener);
+    return () => listeners.splice(listeners.indexOf(listener), 1);
+  }
+
+  function replaceReducer(newReducer) {
+    currentReducer = newReducer;
+    dispatch(initAction);
+  }
+
+  return {
+    state$,
+    dispatcher$,
+    getState: () => state,
+    dispatch,
+    subscribe,
+    getReducer: () => currentReducer,
+    replaceReducer
+  };
 }

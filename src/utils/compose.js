@@ -10,5 +10,5 @@
  * the last of the `funcs` is called, and its result is returned.
  */
 export default function compose(...funcs) {
-    return funcs.reduceRight((composed, f) => f(composed));
+  return funcs.reduceRight((composed, f) => f(composed));
 }
