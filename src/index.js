@@ -1,11 +1,12 @@
 import Rx from 'rx'
 import isPlainObject from './utils/isPlainObject'
 import combineReducers from './utils/combineReducers'
+import applyMiddleware from './utils/applyMiddleware'
 
 function createDispatch(initState, reducer) {
     let state = initState;
 
-    return (action) => {
+    function dispatch(action) {
         if(!isPlainObject(action)) {
             console.error('[reducer] Action:', action,'is not plain object. Current state will be returned.');
         }
@@ -15,10 +16,15 @@ function createDispatch(initState, reducer) {
 
         return state
     }
+
+    return {
+        dispatch,
+        getState: () => state
+    }
 }
 
 function createStore(reducer, initState) {
-    const dispatch = createDispatch(initState, reducer);
+    const {dispatch, getState} = createDispatch(initState, reducer);
     const dispatcher$ = new Rx.Subject();
 
     dispatcher$.subscribeOnCompleted(() => {
@@ -30,6 +36,8 @@ function createStore(reducer, initState) {
     return {
         state$,
         dispatcher$,
+        getState,
+        dispatch: dispatcher$.onNext.bind(dispatcher$),
         getReducer: () => reducer,
         replaceReducer: (newReducer) => { reducer = newReducer; }
     }
@@ -37,5 +45,6 @@ function createStore(reducer, initState) {
 
 export default {
     createStore,
-    combineReducers
+    combineReducers,
+    applyMiddleware
 }
