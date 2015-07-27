@@ -1,6 +1,8 @@
 rx-redux
 ========
 
+[![npm version](https://img.shields.io/npm/v/rx-redux.svg?style=flat-square)](https://www.npmjs.com/package/rx-redux)
+
 A reimplementation of [redux](https://github.com/gaearon/redux) using [RxJS](https://github.com/Reactive-Extensions/RxJS).
 
 ## Why?
