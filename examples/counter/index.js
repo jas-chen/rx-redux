@@ -1,5 +1,5 @@
 import Rx from 'rx'
-import {createStore, combineReducers, applyMiddleware} from 'rx-redux'
+import {createStore, combineReducers, applyMiddleware, bindActionCreators} from 'rx-redux'
 import thunkMiddleware from 'redux-thunk'
 import * as reducers from './reducers'
 import * as CounterActions from './actions/CounterActions'
@@ -53,7 +53,7 @@ const newCreateStore = applyMiddleware(dumbMiddleware(1), thunkMiddleware, dumbM
 const store = newCreateStore(reducer);
 
 //const {dispatcher$, state$} = createStore(reducer);
-const {dispatcher$, state$, getReducer, replaceReducer, subscribe, getState} = store;
+const {dispatcher$, state$, dispatch, getReducer, replaceReducer, subscribe, getState} = store;
 
 updateCounter(getState());
 
@@ -84,4 +84,8 @@ window.reducer2 = function counter(state = 0, action = {}) {
 };
 
 window.replaceReducer = replaceReducer;
+
+window.dispatch = dispatch;
+window.bindAction = bindActionCreators(CounterActions, dispatch);
+window.CounterActions = CounterActions;
 //dispatcher$.onCompleted();

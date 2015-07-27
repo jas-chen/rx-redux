@@ -1,6 +1,7 @@
 import Rx from 'rx'
 import isPlainObject from './utils/isPlainObject'
 import combineReducers from './utils/combineReducers'
+import bindActionCreators from './utils/bindActionCreators'
 import applyMiddleware from './utils/applyMiddleware'
 import compose from './utils/compose'
 
@@ -68,5 +69,6 @@ export default {
     createStore,
     combineReducers,
     applyMiddleware,
-    compose
+    compose,
+    bindActionCreators
 }
