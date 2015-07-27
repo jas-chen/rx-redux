@@ -14,21 +14,27 @@ function createDispatcher() {
 export default function createStore(reducer, initState) {
     const initAction = {type: '@@rx-redux/INIT_' + Math.random()};
     const listeners = [];
+    function callListeners() { listeners.forEach(listener => listener()); }
 
     const dispatcher$ = createDispatcher();
-    const state$ = dispatcher$.map(dispatch).do(() => listeners.forEach(listener => listener()));
+    const state$ = dispatcher$.map(reduce).do(callListeners);
 
     let state = reducer(initState, initAction);
 
-    function dispatch(action) {
+    function reduce(action) {
         if(!isPlainObject(action)) {
-            console.error('[reducer] Action:', action,'is not plain object. Current state will be returned.');
+            console.error('[reducer] Action:', action,'is not a plain object. Current state will be returned.');
         }
         else {
             state = reducer(state, action);
         }
 
         return state
+    }
+
+    function dispatch(action) {
+        dispatcher$.onNext(action);
+        return action;
     }
 
     function subscribe(listener) {
@@ -48,7 +54,7 @@ export default function createStore(reducer, initState) {
         state$,
         dispatcher$,
         getState: () => state,
-        dispatch: dispatcher$.onNext.bind(dispatcher$),
+        dispatch,
         subscribe,
         getReducer: () => reducer,
         replaceReducer
