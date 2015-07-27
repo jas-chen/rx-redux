@@ -1,4 +1,4 @@
-import Rx from 'rx';
+import Rx from 'rx/dist/rx.lite.compat';
 import isPlainObject from './utils/isPlainObject';
 
 export default function createStore(reducer, initState) {

@@ -1,4 +1,4 @@
-import Rx from 'rx';
+import Rx from 'rx/dist/rx.lite.compat';
 import createStore from './createStore';
 import combineReducers from './utils/combineReducers';
 import bindActionCreators from './utils/bindActionCreators';

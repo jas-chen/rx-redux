@@ -1,4 +1,4 @@
-import Rx from 'rx';
+import Rx from 'rx/dist/rx.lite.compat';
 import compose from './compose';
 
 function createNewDispatch(middleware, store) {
