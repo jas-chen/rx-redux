@@ -1,50 +1,31 @@
-function wrapDispatcher(store, dispatcher, middleware) {
-    const m$ = new Rx.Subject();
-    const next = m$.onNext.bind(m$);
-    dispatcher.subscribe(action => {
-        middleware(store)(next)(action);
-    });
+import Rx from 'rx'
+import compose from './compose'
 
-    return m$;
+function createNewDispatch(middleware, store) {
+    const dispatches = middleware.map(m => m(store));
+    dispatches.push(store.dispatch);
+
+    return compose(...dispatches);
 }
 
-function chainMiddleware(middleware, store) {
-    let dispatch;
-    middleware.reduceRight((nextMiddleware, middleware) => {
-        dispatch = middleware(store)(nextMiddleware);
-        return middleware;
-    });
+function createNewDispatcher(middleware, store) {
+    const newDispatch = createNewDispatch(middleware, store);
+    const newDispatcher$ = new Rx.Subject();
+    newDispatcher$.subscribe(newDispatch);
 
-    return dispatch;
+    return newDispatcher$;
 }
 
 export default function applyMiddleware(...middleware) {
     return function(createStore) {
-        return function(reducers) {
-            const store = createStore(reducers);
+        return function(reducer, initState) {
+            const store = createStore(reducer, initState);
+            const newDispatcher$ = createNewDispatcher(middleware, store);
 
-            const dispatcher$ = store.getDispatcher();
+            store.dispatcher$ = newDispatcher$;
+            store.dispatch = newDispatcher$.onNext.bind(newDispatcher$);
 
-            /*
-            let last$;
-            middleware.reduce((cur, next) => {
-                last$ = wrapDispatcher(store, cur, next);
-                return last$
-            }, dispatcher$);
-
-             store.replaceDispatcher(last$);
-            */
-
-            const newDispatch = chainMiddleware(middleware, store);
-            const newDispatcher$ = new Rx.Subject();
-
-            dispatcher$.subscribe(action => {
-                newDispatcher$.onNext(newDispatch(action));
-            });
-
-            store.replaceDispatcher(dispatcher$.map(dispatch));
-
-            return store
+            return store;
         }
     }
 }

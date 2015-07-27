@@ -2,6 +2,9 @@ import Rx from 'rx'
 import isPlainObject from './utils/isPlainObject'
 import combineReducers from './utils/combineReducers'
 import applyMiddleware from './utils/applyMiddleware'
+import compose from './utils/compose'
+
+const initAction = {type: '@@rx-redux/INIT_' + Math.random()};
 
 function createDispatch(reducer) {
     let state;
@@ -39,8 +42,6 @@ function createDispatch(reducer) {
     }
 }
 
-const initAction = {type: '@@rx-redux/INIT_' + Math.random()};
-
 function createStore(reducer, initState) {
     const {dispatch, getState, subscribe, setState, replaceReducer} = createDispatch(reducer);
     setState(reducer(initState, initAction));
@@ -66,5 +67,6 @@ function createStore(reducer, initState) {
 export default {
     createStore,
     combineReducers,
-    applyMiddleware
+    applyMiddleware,
+    compose
 }

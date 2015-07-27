@@ -1,5 +1,5 @@
 import Rx from 'rx'
-import {createStore, combineReducers} from 'rx-redux'
+import {createStore, combineReducers, applyMiddleware} from 'rx-redux'
 import thunkMiddleware from 'redux-thunk'
 import * as reducers from './reducers'
 import * as CounterActions from './actions/CounterActions'
@@ -44,11 +44,16 @@ function dumbMiddleware(id) {
     }
 }
 
-//const newCreateStore = applyMiddleware(dumbMiddleware(1), thunkMiddleware, dumbMiddleware(2))(createStore);
+
 const reducer = combineReducers(reducers);
 
+const newCreateStore = applyMiddleware(dumbMiddleware(1), thunkMiddleware, dumbMiddleware(2))(createStore);
+
+// const store = createStore(reducer);
+const store = newCreateStore(reducer);
+
 //const {dispatcher$, state$} = createStore(reducer);
-const {dispatcher$, state$, getReducer, replaceReducer, subscribe, getState} = createStore(reducer);
+const {dispatcher$, state$, getReducer, replaceReducer, subscribe, getState} = store;
 
 updateCounter(getState());
 
