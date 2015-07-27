@@ -23,7 +23,10 @@ export default function applyMiddleware(...middleware) {
             const newDispatcher$ = createNewDispatcher(middleware, store);
 
             store.dispatcher$ = newDispatcher$;
-            store.dispatch = newDispatcher$.onNext.bind(newDispatcher$);
+            store.dispatch = function(action) {
+                newDispatcher$.onNext(action);
+                return action;
+            };
 
             return store;
         }

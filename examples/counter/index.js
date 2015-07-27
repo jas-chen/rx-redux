@@ -67,7 +67,7 @@ action$.subscribe(action => dispatcher$.onNext(action));
 
 // dispatcher$.onNext({type: '@@INIT' + Math.random()});
 
-subscribe(() => {
+window.unsubscribe = subscribe(() => {
     console.log('listener get called. state:', getState());
 });
 
@@ -84,7 +84,7 @@ window.reducer2 = function counter(state = 0, action = {}) {
 };
 
 window.replaceReducer = replaceReducer;
-
+console.log(dispatch(CounterActions.incrementAsync()));
 window.dispatch = dispatch;
 window.bindAction = bindActionCreators(CounterActions, dispatch);
 window.CounterActions = CounterActions;
