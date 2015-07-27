@@ -38,9 +38,6 @@ export default function createStore(reducer, initState) {
     }
 
     function subscribe(listener) {
-        // this doesn't work, so sad.
-        // state$.do(listener);
-
         listeners.push(listener);
         return () => listeners.splice(listeners.indexOf(listener), 1)
     }
