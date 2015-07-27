@@ -5,7 +5,8 @@ var webpack = require('webpack');
 var plugins = [
     new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-    })
+    }),
+    new webpack.optimize.OccurenceOrderPlugin()
 ];
 
 if (process.env.NODE_ENV === 'production') {
@@ -20,10 +21,10 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 module.exports = {
-    devtool: 'eval',
     entry: './src/index',
     output: {
-        filename: 'bundle.js'
+        library: 'RxRedux',
+        libraryTarget: 'umd'
     },
     module: {
         loaders: [

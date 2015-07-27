@@ -4,6 +4,10 @@
   "description": "Reimplement redux using rxjs",
   "main": "index.js",
   "scripts": {
+    "clean": "rimraf lib dist",
+    "build:lib": "babel src --out-dir lib",
+    "build:umd": "webpack src/index.js dist/rx-redux.js && NODE_ENV=production webpack src/index.js dist/rx-redux.min.js",
+    "build": "npm run build:lib && npm run build:umd",
     "lint": "eslint src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -33,6 +37,7 @@
     "babel-loader": "^5.3.2",
     "eslint": "^0.24.1",
     "eslint-config-airbnb": "0.0.6",
+    "rimraf": "^2.4.2",
     "webpack": "^1.10.3"
   }
 }
