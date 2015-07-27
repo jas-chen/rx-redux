@@ -12,7 +12,7 @@ function createDispatcher() {
 }
 
 export default function createStore(reducer, initState) {
-    const initAction = {type: '@@rx-redux/INIT_' + Math.random()};
+    const initAction = {type: '@@rx-redux/INIT_' + (new Date()).getTime()};
     const listeners = [];
     function callListeners() { listeners.forEach(listener => listener()); }
 

@@ -2,10 +2,10 @@ import Rx from 'rx'
 import compose from './compose'
 
 function createNewDispatch(middleware, store) {
-    const dispatches = middleware.map(m => m(store));
-    dispatches.push(store.dispatch);
+    const dispatchFunctions = middleware.map(m => m(store));
+    dispatchFunctions.push(store.dispatch);
 
-    return compose(...dispatches);
+    return compose(...dispatchFunctions);
 }
 
 function createNewDispatcher(middleware, store) {
