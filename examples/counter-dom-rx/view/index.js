@@ -18,10 +18,10 @@ function get(id) {
 
 function getActionStream() {
   return when(
-      fromEvent(get('btn-decrease'), 'click').thenDo(x => CounterActions.decrement()),
-      fromEvent(get('btn-increase'), 'click').thenDo(x => CounterActions.increment()),
-      fromEvent(get('btn-odd'), 'click').thenDo(x => CounterActions.incrementIfOdd()),
-      fromEvent(get('btn-async'), 'click').thenDo(x => CounterActions.incrementAsync())
+      fromEvent(get('btn-decrease'), 'click').thenDo(CounterActions.decrement),
+      fromEvent(get('btn-increase'), 'click').thenDo(CounterActions.increment),
+      fromEvent(get('btn-odd'), 'click').thenDo(CounterActions.incrementIfOdd),
+      fromEvent(get('btn-async'), 'click').thenDo(CounterActions.incrementAsync)
   )
 }
 
