@@ -3,8 +3,11 @@ rx-redux
 
 A reimplementation of [redux](https://github.com/gaearon/redux) using [RxJS](https://github.com/Reactive-Extensions/RxJS).
 
+## Why?
+Reactive by default.
+
 ## Features
-- All redux APIs provided.
+- All [redux APIs](https://github.com/gaearon/redux/blob/rewrite-docs/docs/Reference/API.md) provided.
 - `Store` has 2 rx objects you can use:
     - `dispatcher$` is a [Subject](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/subjects/subject.md) that you can pass actions in.
     - `state$` is an [Observable](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md), a stream of states.
@@ -46,8 +49,8 @@ open http://localhost:8080
 
 ## WIP
 - Figure out how to test a Rx project (No experience before).
-- Test if Hot Module Replacement works.
-- Test if [redux-devtools](https://github.com/gaearon/redux-devtools) works.
+- Work with Hot Module Replacement.
+- Work with [redux-devtools](https://github.com/gaearon/redux-devtools).
 - More examples.
 
 ## Inspiration
