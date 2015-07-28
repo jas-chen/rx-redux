@@ -28,7 +28,7 @@ const reducer = combineReducers(reducers);
 const store = newCreateStore(reducer);
 
 // stream states to view
-store.state$.startWith(store.getState()).subscribe(state => render(state));
+store.state$.subscribe(state => render(state));
 
 // stream actions to dispatcher
 action$.subscribe(action => store.dispatcher$.onNext(action));

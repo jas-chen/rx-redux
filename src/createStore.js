@@ -38,7 +38,7 @@ export default function createStore(reducer, initState) {
     return state;
   }
 
-  const state$ = dispatcher$.map(reduce).do(callListeners);
+  const state$ = dispatcher$.map(reduce).do(callListeners).startWith(state);
 
   return {
     state$,
