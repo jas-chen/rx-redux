@@ -38,5 +38,8 @@
     "rimraf": "^2.4.2",
     "rx": "^2.5.3",
     "webpack": "^1.10.3"
+  },
+  "dependencies": {
+    "isomorphic-console": "0.0.1"
   }
 }
