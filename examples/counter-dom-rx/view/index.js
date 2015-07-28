@@ -1,7 +1,7 @@
-import Rx from 'rx'
+import {Observable} from 'rx/dist/rx.joinpatterns';
 import * as CounterActions from '../actions/CounterActions'
 
-const {when, fromEvent} = Rx.Observable;
+const {when, fromEvent} = Observable;
 
 const render = (() => {
   const counter = document.getElementById('count');
