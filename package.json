@@ -1,6 +1,6 @@
 {
   "name": "rx-redux",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Reimplement redux using rxjs",
   "main": "index.js",
   "scripts": {
