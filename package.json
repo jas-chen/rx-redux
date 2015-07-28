@@ -1,12 +1,12 @@
 {
   "name": "rx-redux",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "Reimplement redux using rxjs",
   "main": "index.js",
   "scripts": {
     "clean": "rimraf lib dist",
     "build:lib": "babel src --out-dir lib",
-    "build:umd": "webpack src/index.js dist/rx-redux.js && NODE_ENV=production webpack src/index.js dist/rx-redux.min.js",
+    "build:umd": "webpack src/index.js dist/rx-redux.js --display-modules --progress && NODE_ENV=production webpack src/index.js dist/rx-redux.min.js --display-modules --progress",
     "build": "npm run build:lib && npm run build:umd",
     "lint": "eslint src",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -29,9 +29,6 @@
     "url": "https://github.com/jas-chen/rx-redux/issues"
   },
   "homepage": "https://github.com/jas-chen/rx-redux#readme",
-  "dependencies": {
-    "rx": "^2.5.3"
-  },
   "devDependencies": {
     "babel-core": "^5.8.3",
     "babel-eslint": "^4.0.5",
@@ -39,6 +36,7 @@
     "eslint": "^0.24.1",
     "eslint-config-airbnb": "0.0.6",
     "rimraf": "^2.4.2",
+    "rx": "^2.5.3",
     "webpack": "^1.10.3"
   }
 }

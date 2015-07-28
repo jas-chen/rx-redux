@@ -9,10 +9,12 @@ A reimplementation of [redux](https://github.com/gaearon/redux) using [RxJS](htt
 Reactive by default.
 
 ## Features
-- All [redux APIs](https://github.com/gaearon/redux/blob/rewrite-docs/docs/Reference/API.md) provided.
-- `Store` has 2 rx objects you can use:
+- All of the [redux APIs](https://github.com/gaearon/redux/blob/rewrite-docs/docs/Reference/API.md) implemented.
+- Additionally, `store` provides 2 rx objects you can utilize:
     - `dispatcher$` is a [Subject](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/subjects/subject.md) that you can pass actions in.
     - `state$` is an [Observable](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md), a stream of states.
+- You can obtain [RxJS Lite Module](https://github.com/Reactive-Extensions/RxJS/tree/master/modules/rx-lite-compat) from `rx-redux`:
+  - `import {Rx} from 'rx-redux'`
 
 ## What does it look like?
 ``` javascript
