@@ -1,5 +1,7 @@
-import {Rx} from 'rx-redux'
+import Rx from 'rx'
 import * as CounterActions from '../actions/CounterActions'
+
+const {when, fromEvent} = Rx.Observable;
 
 const render = (() => {
   const counter = document.getElementById('count');
@@ -10,19 +12,17 @@ const render = (() => {
   }
 })();
 
-function domEventToActionStream(id, event, actionCreator) {
-  const element = document.getElementById(id);
-  const event$ = Rx.Observable.fromEvent(element, event);
-  return event$.map(actionCreator);
+function get(id) {
+  return document.getElementById(id);
 }
 
 function getActionStream() {
-  const decreaseAction$ = domEventToActionStream('btn-decrease', 'click', CounterActions.decrement);
-  const increaseAction$ = domEventToActionStream('btn-increase', 'click', CounterActions.increment);
-  const increaseIfOddAction$ = domEventToActionStream('btn-odd', 'click', CounterActions.incrementIfOdd);
-  const increaseAsyncAction$ = domEventToActionStream('btn-async', 'click', CounterActions.incrementAsync);
-
-  return Rx.Observable.merge(decreaseAction$, increaseAction$, increaseIfOddAction$, increaseAsyncAction$);
+  return when(
+      fromEvent(get('btn-decrease'), 'click').thenDo(CounterActions.decrement),
+      fromEvent(get('btn-increase'), 'click').thenDo(CounterActions.increment),
+      fromEvent(get('btn-odd'), 'click').thenDo(CounterActions.incrementIfOdd),
+      fromEvent(get('btn-async'), 'click').thenDo(CounterActions.incrementAsync)
+  )
 }
 
 export default {
