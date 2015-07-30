@@ -1,11 +1,12 @@
 import {createStore, combineReducers, applyMiddleware} from 'rx-redux'
 import thunkMiddleware from 'redux-thunk'
+import promiseMiddleware from './middleware/promiseMiddleware'
 import * as reducers from './reducers'
 import { render, getActionStream } from './view'
 
 const action$ = getActionStream();
 
-const newCreateStore = applyMiddleware(thunkMiddleware)(createStore);
+const newCreateStore = applyMiddleware(thunkMiddleware, promiseMiddleware)(createStore);
 const reducer = combineReducers(reducers);
 const store = newCreateStore(reducer);
 

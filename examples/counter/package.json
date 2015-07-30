@@ -1,5 +1,5 @@
 {
-  "name": "counter-dom-rx",
+  "name": "counter",
   "version": "0.1.0",
   "description": "Counter example for rx-redux",
   "main": "index.js",

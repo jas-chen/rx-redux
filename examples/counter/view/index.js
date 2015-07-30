@@ -21,7 +21,8 @@ function getActionStream() {
       fromEvent(get('btn-decrease'), 'click').thenDo(CounterActions.decrement),
       fromEvent(get('btn-increase'), 'click').thenDo(CounterActions.increment),
       fromEvent(get('btn-odd'), 'click').thenDo(CounterActions.incrementIfOdd),
-      fromEvent(get('btn-async'), 'click').thenDo(CounterActions.incrementAsync)
+      fromEvent(get('btn-timeout'), 'click').thenDo(CounterActions.incrementTimeout),
+      fromEvent(get('btn-promise'), 'click').thenDo(CounterActions.incrementPromise)
   )
 }
 
