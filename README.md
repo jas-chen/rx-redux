@@ -34,16 +34,6 @@ store.state$.subscribe(state => render(state));
 action$.subscribe(action => store.dispatcher$.onNext(action));
 ```
 
-## Running Examples
-```
-git clone https://github.com/jas-chen/rx-redux.git
-
-cd examples/counter-dom-rx
-npm install
-npm start
-open http://localhost:8080
-```
-
 ## WIP
 - Figure out how to test a Rx project (No experience before).
 - Work with Hot Module Replacement.
