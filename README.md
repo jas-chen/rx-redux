@@ -35,7 +35,7 @@ action$.subscribe(action => store.dispatcher$.onNext(action));
 ```
 
 ## Best practice to make your app all the way reactive
-** Don't ** do async in `Middleware`, create `RxMiddleware` instead.
+**Don't** do async in `Middleware`, create `RxMiddleware` instead.
 
 ### RxMiddleware
 Which wrap action stream.
@@ -59,7 +59,7 @@ export default function thunkMiddleware(getState) {
 
 How to design `rx-middleware`
 - Get action, return [Observable](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md).
-- ** Must ** return Observable.
+- **Must** return Observable.
 - If you don't want to return a action (eg. if counter is not odd), return a `dummy action`.
 
 [See rx-middleware example](./examples/counter-rx)
