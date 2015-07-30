@@ -31,5 +31,9 @@
     "babel-loader": "^5.3.2",
     "webpack": "^1.10.3",
     "webpack-dev-server": "^1.10.1"
+  },
+  "dependencies": {
+    "rx-lite-joinpatterns": "^2.5.2",
+    "rx-redux": "^0.5.1"
   }
 }

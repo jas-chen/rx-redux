@@ -37,8 +37,6 @@ action$.subscribe(action => store.dispatcher$.onNext(action));
 ## Running Examples
 ```
 git clone https://github.com/jas-chen/rx-redux.git
-cd rx-redux
-npm install
 
 cd examples/counter-dom-rx
 npm install

@@ -1,8 +1,6 @@
 'use strict';
 
 var path = require('path');
-var rxRedux = path.join(__dirname, '..', '..');
-var src = path.join(rxRedux, 'src');
 var webpack = require('webpack');
 
 var plugins = [
@@ -31,8 +29,7 @@ module.exports = {
   },
   resolve: {
     alias: {
-      'rx-redux': src,
-      'rx': path.join(rxRedux, 'node_modules', 'rx')
+      'rx': 'rx-lite-joinpatterns'
     },
     extensions: ['', '.js']
   },
@@ -41,10 +38,6 @@ module.exports = {
       {
         test: /\.js$/,
         loaders: ['babel-loader'],
-        include: [
-          __dirname,
-          src
-        ],
         exclude: /node_modules/
       }
     ]
