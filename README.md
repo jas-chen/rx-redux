@@ -34,6 +34,36 @@ store.state$.subscribe(state => render(state));
 action$.subscribe(action => store.dispatcher$.onNext(action));
 ```
 
+## Best practice to make your app all the way reactive
+** Don't ** do async in `Middleware`, create `RxMiddleware` instead.
+
+### RxMiddleware
+Which wrap action stream.
+
+Look like this
+```javascript
+import Rx from 'rx';
+
+export default function thunkMiddleware(getState) {
+  return action => {
+    if(typeof action === 'function') {
+      return Rx.Observable.just(action(getState));
+    }
+
+    // Don't know how to handle this thing, pass to next rx-middleware
+    return Rx.Observable.just(action);
+  };
+}
+
+```
+
+How to design `rx-middleware`
+- Get action, return [Observable](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md).
+- ** Must ** return Observable.
+- If you don't want to return a action (eg. if counter is not odd), return a `dummy action`.
+
+[See rx-middleware example](./examples/counter-rx)
+
 ## WIP
 - Figure out how to test a Rx project (No experience before).
 - Work with Hot Module Replacement.
