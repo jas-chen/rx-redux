@@ -3,7 +3,7 @@ Counter demo
 
 Basic example
 - no view library.
-- use [redux-thunk](https://github.com/gaearon/redux-thunk) and [promise](./middleware/promiseMiddleware.js) to show the compatibility with redux middleware.
+- use middleware [redux-thunk](https://github.com/gaearon/redux-thunk) and [promise](./middleware/promiseMiddleware.js) to show the compatibility with redux.
 
 ## How to run?
 ```
