@@ -41,7 +41,7 @@ action$.subscribe(action => store.dispatcher$.onNext(action));
 - More examples.
 
 ## Inspiration
-- [redux](https://github.com/gaearon/redux), have learn a lot through the source code.
+- [redux](https://github.com/gaearon/redux), learn a lot through the source code.
 - [Cycle.js](http://cycle.js.org/) for the cool MVI flow.
 
 ## License
