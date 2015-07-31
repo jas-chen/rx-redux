@@ -9,13 +9,10 @@ const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 const reducer = combineReducers(reducers);
 const store = createStoreWithMiddleware(reducer);
 
+// initialize state$
+store.state$.subscribe();
+
 export default class App extends Component {
-
-  // initialize state$
-  componentWillMount() {
-    store.state$.subscribe();
-  }
-
   render() {
     return (
       <Provider store={store}>
