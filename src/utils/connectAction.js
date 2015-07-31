@@ -4,7 +4,7 @@ export default function connectAction(action$, store) {
       store.dispatch(action)
     },
     (err) => {
-      throw new Error(err);
+      store.dispatcher$.onError(err);
     },
     () => {
       store.dispatcher$.onCompleted();
