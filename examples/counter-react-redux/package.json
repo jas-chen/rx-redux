@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --inline --colors",
+    "dev": "webpack-dev-server --config webpack.config.dev.js --inline --colors",
     "build": "NODE_ENV=production webpack --display-modules --progress",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -35,7 +36,7 @@
     "react": "^0.13.3",
     "react-redux": "^0.2.2",
     "rx-lite": "^2.5.2",
-    "rx-redux": "^0.5.1",
+    "rx-redux": "^0.5.2",
     "redux-thunk": "^0.1.0"
   }
 }

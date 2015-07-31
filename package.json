@@ -1,6 +1,6 @@
 {
   "name": "rx-redux",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Reimplement redux using rxjs",
   "main": "lib/index.js",
   "scripts": {
@@ -38,8 +38,5 @@
     "rimraf": "^2.4.2",
     "rx": "^2.5.3",
     "webpack": "^1.10.3"
-  },
-  "dependencies": {
-    "isomorphic-console": "0.0.1"
   }
 }

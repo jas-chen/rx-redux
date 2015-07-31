@@ -1,6 +1,5 @@
 import Rx from 'rx';
 import isPlainObject from './utils/isPlainObject';
-import console from 'isomorphic-console';
 
 export default function createStore(reducer, initState) {
   const initAction = {type: '@@rx-redux/INIT_' + (new Date()).getTime()};
@@ -31,7 +30,7 @@ export default function createStore(reducer, initState) {
 
   function reduce(action) {
     if (!isPlainObject(action)) {
-      console.error(new Error('Action must be a plain object. Current state will be returned.'));
+      throw new Error('Action must be a plain object. Current state will be returned.');
     } else {
       state = currentReducer(state, action);
     }
@@ -39,7 +38,11 @@ export default function createStore(reducer, initState) {
     return state;
   }
 
-  const state$ = dispatcher$.map(reduce).do(callListeners).startWith(state);
+  const state$ = dispatcher$.map(reduce).publish().refCount().startWith(state);
+  state$.subscribe(
+    callListeners,
+    err => { throw err; }
+  );
 
   return {
     state$,

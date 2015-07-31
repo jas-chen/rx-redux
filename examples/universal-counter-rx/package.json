@@ -6,6 +6,7 @@
   "scripts": {
     "clean": "rm -rf build",
     "start": "npm run build & npm run server",
+    "dev": "webpack-dev-server --config webpack.config.dev.js --inline --colors",
     "build": "webpack -d --progress --watch",
     "server": "nodemon --exec babel-node --stage 0 --ignore='/node_modules/' --  src/server/",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -20,7 +21,7 @@
     "nodemon": "^1.4.0",
     "rx": "^2.5.3",
     "rx-lite-joinpatterns": "^2.5.2",
-    "rx-redux": "^0.5.1",
+    "rx-redux": "^0.5.2",
     "webpack": "^1.10.5",
     "webpack-dev-server": "^1.10.1"
   }
