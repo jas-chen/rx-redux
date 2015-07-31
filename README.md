@@ -6,7 +6,7 @@ rx-redux
 A reimplementation of [redux](https://github.com/gaearon/redux) using [RxJS](https://github.com/Reactive-Extensions/RxJS).
 
 ## Why?
-Reactive by default.
+Reactive by default, [this makes difference](./examples/universal-counter-rx).
 
 ## Features
 - All of the [redux APIs](https://github.com/gaearon/redux/blob/rewrite-docs/docs/Reference/API.md) implemented.
