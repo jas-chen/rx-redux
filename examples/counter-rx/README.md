@@ -1,7 +1,7 @@
 Counter demo
 ============
 
-Rx middleware example
+RxMiddleware example
 - no view library.
 - use [RxMiddleware](https://github.com/jas-chen/rx-redux/#RxMiddleware).
 

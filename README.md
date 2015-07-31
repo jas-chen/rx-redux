@@ -57,12 +57,12 @@ export default function thunkMiddleware(getState) {
 
 ```
 
-How to design `rx-middleware`
+How to design `RxMiddleware`
 - Get action, return [Observable](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md).
 - **Must** return Observable.
 - If you don't want to return a action (eg. if counter is not odd), return a `dummy action`.
 
-[See rx-middleware example](./examples/counter-rx)
+[See RxMiddleware example](./examples/counter-rx)
 
 ## WIP
 - Figure out how to test a Rx project (No experience before).
