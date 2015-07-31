@@ -39,6 +39,8 @@ action$.subscribe(action => store.dispatcher$.onNext(action));
 ## Best practice to make your app all the way reactive
 **Don't** do async in `Middleware`, create `RxMiddleware` instead.
 
+This will ease the pain to build universal app. [See universal example](./examples/universal-counter-rx)
+
 ### RxMiddleware
 Which wrap action stream.
 
