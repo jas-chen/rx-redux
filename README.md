@@ -13,6 +13,8 @@ Reactive by default.
 - Additionally, `store` provides 2 rx objects you can utilize:
     - `dispatcher$` is a [Subject](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/subjects/subject.md) that you can pass actions in.
     - `state$` is an [Observable](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md), a stream of states.
+- And one helper function `import { connectAction } from 'rx-redux';`
+  - You can use `connectAction(action$, store)` to stream actions to dispatcher.
 
 ## What does it look like?
 ``` javascript
