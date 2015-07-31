@@ -1,6 +1,6 @@
 import express from 'express';
 import path from 'path';
-import { createStore } from 'rx-redux';
+import { createStore, connectAction } from 'rx-redux';
 import { reducer, applyRxMiddleware } from '../shared';
 import getActionStream from './utils/getActionStream';
 import render from './utils/render';
@@ -26,13 +26,7 @@ app.get('/', function (req, res) {
   );
 
   // stream actions to dispatcher
-  action$.subscribe(
-    action => store.dispatch(action),
-    err => { throw new Error(err); },
-
-    // important!!!!
-    () => { store.dispatcher$.onCompleted(); }
-  );
+  connectAction(action$, store);
 });
 
 // static path for browser to get bundle.js

@@ -21,7 +21,7 @@
     "nodemon": "^1.4.0",
     "rx": "^2.5.3",
     "rx-lite-joinpatterns": "^2.5.2",
-    "rx-redux": "^0.5.2",
+    "rx-redux": "^0.5.5",
     "webpack": "^1.10.5",
     "webpack-dev-server": "^1.10.1"
   }
