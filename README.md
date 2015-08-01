@@ -1,7 +1,7 @@
+[![npm version](https://img.shields.io/npm/v/rx-redux.svg?style=flat-square)](https://www.npmjs.com/package/rx-redux)
+
 rx-redux
 ========
-
-[![npm version](https://img.shields.io/npm/v/rx-redux.svg?style=flat-square)](https://www.npmjs.com/package/rx-redux)
 
 A reimplementation of [redux](https://github.com/gaearon/redux) using [RxJS](https://github.com/Reactive-Extensions/RxJS).
 
@@ -13,12 +13,11 @@ Reactive by default, [this makes difference](./examples/universal-counter-rx).
 - Additionally, `store` provides 2 rx objects you can utilize:
     - `dispatcher$` is a [Subject](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/subjects/subject.md) that you can pass actions in.
     - `state$` is an [Observable](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md), a stream of states.
-- And one helper function `import { connectAction } from 'rx-redux';`
-  - You can use `connectAction(action$, store)` to stream actions to dispatcher.
+- And a helper function `connectAction` to stream actions to store (see example below).
 
 ## What does it look like?
 ``` javascript
-import {createStore, combineReducers, applyMiddleware} from 'rx-redux'
+import {createStore, combineReducers, applyMiddleware, connectAction} from 'rx-redux'
 import thunkMiddleware from 'redux-thunk'
 import * as reducers from './reducers'
 import { render, getActionStream } from './view'
@@ -34,17 +33,17 @@ store.state$.subscribe(state => render(state));
 
 // stream actions to dispatcher
 action$.subscribe(action => store.dispatcher$.onNext(action));
+// or you can write this way
+// connectAction(action$, store);
 ```
 
 ## Best practice to make your app all the way reactive
 **Don't** do async in `Middleware`, create `RxMiddleware` instead.
 
-This will ease the pain to build universal app. [See universal example](./examples/universal-counter-rx)
+This will [ease the pain to build universal apps](./examples/universal-counter-rx).
 
 ### RxMiddleware
-Which wrap action stream.
-
-Look like this
+Which wraps action stream, look like this:
 ```javascript
 import Rx from 'rx';
 
@@ -64,15 +63,20 @@ export default function thunkMiddleware(getState) {
 How to design `RxMiddleware`
 - Get action, return [Observable](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md).
 - **Must** return Observable.
-- If you don't want to return a action (eg. if counter is not odd), return a `dummy action`.
+  - If you don't want to return an action (eg. if counter is not odd), return a `dummy action` (and [filter it out before sending to store](./examples/counter-rx/index.js#L23)).
 
-[See RxMiddleware example](./examples/counter-rx)
+[See a basic RxMiddleware example](./examples/counter-rx)
 
 ## WIP
 - Figure out how to test a Rx project (No experience before).
 - Work with Hot Module Replacement.
 - Work with [redux-devtools](https://github.com/gaearon/redux-devtools).
 - More examples.
+
+## Thanks
+- [@xgrommx](https://github.com/xgrommx) for  submitting pull requests and suggestions.
+
+> *Feel free to [ask questions](./issues/) or submit pull requests!*
 
 ## Inspiration
 - [redux](https://github.com/gaearon/redux), learn a lot through the source code.
