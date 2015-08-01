@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "rx-lite-joinpatterns": "^2.5.2",
-    "rx-redux": "^0.5.2",
+    "rx-redux": "^0.5.7",
     "redux-thunk": "^0.1.0"
   }
 }
