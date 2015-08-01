@@ -4,13 +4,19 @@ import * as CounterActions from '../../shared/actions/CounterActions';
 const {when, fromEvent} = Rx.Observable;
 
 const render = (() => {
-  const counter = document.getElementById('count');
+  const counterElement = document.getElementById('count');
 
-  return (state) => {
-    console.log('render UI with state:', state);
-    counter.textContent = state.counter.toString();
+  return (currentState, nextState) => {
+    // not every action change view, eg. `increment if odd`
+    if (currentState.counter !== nextState.counter) {
+      console.log('render UI.');
+      counterElement.textContent = nextState.counter.toString();
+    }
 
-    history.replaceState(null, null, '?action=' + state.queryString);
+    // update query string
+    if (nextState.queryString.length) {
+      history.replaceState(null, null, '?action=' + nextState.queryString);
+    }
   }
 })();
 
