@@ -2,7 +2,7 @@ import Rx from 'rx';
 import isPlainObject from './utils/isPlainObject';
 
 export default function createStore(reducer, initState) {
-  if(typeof reducer !== 'function') {
+  if (typeof reducer !== 'function') {
     throw new Error('Expected the reducer to be a function.');
   }
 
@@ -26,7 +26,7 @@ export default function createStore(reducer, initState) {
     listeners.push(listener);
 
     return function unsubscribe() {
-      var index = listeners.indexOf(listener);
+      const index = listeners.indexOf(listener);
       listeners.splice(index, 1);
     };
   }

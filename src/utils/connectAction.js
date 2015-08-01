@@ -1,7 +1,7 @@
 export default function connectAction(action$, store) {
   action$.subscribe(
     (action) => {
-      store.dispatch(action)
+      store.dispatch(action);
     },
     (err) => {
       store.dispatcher$.onError(err);
@@ -10,4 +10,4 @@ export default function connectAction(action$, store) {
       store.dispatcher$.onCompleted();
     }
   );
-};
+}
