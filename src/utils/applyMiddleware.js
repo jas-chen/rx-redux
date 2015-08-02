@@ -10,7 +10,7 @@ function createNewDispatch(middleware, store) {
 
 function createNewDispatcher(middleware, store) {
   const newDispatch = createNewDispatch(middleware, store);
-  const newDispatcher$ = new Rx.Subject();
+  const newDispatcher$ = new Rx.ReplaySubject();
   newDispatcher$.subscribe(newDispatch);
 
   return newDispatcher$;
