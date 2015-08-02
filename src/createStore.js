@@ -8,10 +8,13 @@ export default function createStore(reducer, initState) {
 
   const initAction = {type: '@@rx-redux/INIT_' + (new Date()).getTime()};
   const listeners = [];
-  const dispatcher$ = new Rx.Subject();
+  const dispatcher$ = new Rx.ReplaySubject();
+  const currentReducer$ = new Rx.BehaviorSubject(reducer);
 
-  let currentReducer = reducer;
-  let state = currentReducer(initState, initAction);
+  function currentReducer(state, action) {
+    const reducer = currentReducer$.getValue();
+    return reducer(state, action);
+  }
 
   function callListeners() {
     listeners.forEach(listener => listener());
@@ -32,21 +35,26 @@ export default function createStore(reducer, initState) {
   }
 
   function replaceReducer(newReducer) {
-    currentReducer = newReducer;
-    dispatcher$.onNext(initAction);
+    currentReducer$.onNext(newReducer);
   }
 
-  function reduce(action) {
+  function getInitialState() {
+    return currentReducer(initState, initAction);
+  }
+
+  function reduce(state, action) {
     if (!isPlainObject(action)) {
       throw new Error('Actions must be plain objects.');
     }
 
-    state = currentReducer(state, action);
-
-    return state;
+    return currentReducer(state, action);
   }
 
-  const state$ = dispatcher$.map(reduce).publish().refCount().startWith(state);
+  const state$ = new Rx.BehaviorSubject(getInitialState());
+
+  currentReducer$
+    .flatMapLatest(() => dispatcher$.scan(getInitialState(), reduce))
+    .subscribe(state$.onNext.bind(state$));
 
   // must call state$.subscribe() to start life cycle
   state$.subscribe(
@@ -57,10 +65,10 @@ export default function createStore(reducer, initState) {
   return {
     state$,
     dispatcher$,
-    getState: () => state,
+    getState: () => state$.getValue(),
     dispatch,
     subscribe,
-    getReducer: () => currentReducer,
+    getReducer: () => currentReducer$.getValue(),
     replaceReducer
   };
 }
