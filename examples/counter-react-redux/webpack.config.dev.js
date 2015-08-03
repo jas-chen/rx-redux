@@ -10,7 +10,8 @@ var plugins = [
   new webpack.DefinePlugin({
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
   }),
-  new webpack.optimize.OccurenceOrderPlugin()
+  new webpack.optimize.OccurenceOrderPlugin(),
+  new webpack.NoErrorsPlugin()
 ];
 
 if (process.env.NODE_ENV === 'production') {
@@ -25,7 +26,11 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 module.exports = {
-  entry: './index',
+  entry: [
+    'webpack-dev-server/client?http://localhost:8080',
+    'webpack/hot/dev-server',
+    './index'
+  ],
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'bundle.js'
@@ -42,9 +47,14 @@ module.exports = {
     loaders: [
       {
         test: /\.js$/,
+        loaders: ['react-hot-loader', 'babel-loader'],
+        include: [__dirname],
+        exclude: /node_modules/
+      },
+      {
+        test: /\.js$/,
         loaders: ['babel-loader'],
         include: [
-          __dirname,
           src
         ],
         exclude: /node_modules/
