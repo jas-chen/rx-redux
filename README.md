@@ -8,6 +8,8 @@ A reimplementation of [redux](https://github.com/gaearon/redux) using [RxJS](htt
 ## Why?
 Reactive by default, [this makes difference](./examples/universal-counter-rx).
 
+> If you just want to use redux with RxJS and don't care about API compatibility, see [redux-core](https://github.com/jas-chen/redux-core).
+
 ## Features
 - All of the [redux APIs](https://github.com/gaearon/redux/blob/rewrite-docs/docs/Reference/API.md) implemented.
 - Additionally, `store` provides 2 rx objects you can utilize:
