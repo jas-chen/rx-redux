@@ -65,7 +65,7 @@ export default function thunkMiddleware(getState) {
 How to design `RxMiddleware`
 - Get action, return [Observable](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md).
 - **Must** return Observable.
-  - If you don't want to return an action (eg. if counter is not odd), return a `dummy action` (and [filter it out before sending to store](./examples/counter-rx/index.js#L23)).
+  - If you don't want to return an action (eg. if counter is not odd), return a Rx.Observable.empty().
 
 [See a basic RxMiddleware example](./examples/counter-rx)
 
